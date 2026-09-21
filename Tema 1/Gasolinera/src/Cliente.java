@@ -1,9 +1,9 @@
 public class Cliente {
 
-    final int id;
-    String nombre;
-    String telefono;
-    String matricula;
+    private final int id;
+    private String nombre;
+    private String telefono;
+    private String matricula;
 
     public Cliente(int id, String nombre, String telefono, String matricula) {
         this.id = id;

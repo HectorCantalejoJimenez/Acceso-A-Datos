@@ -2,18 +2,18 @@ import java.time.LocalDate;
 
 public class Repostaje {
     int id;
-    int idClient;
+    int idCliente;
     LocalDate fecha;
     double importe;
-    double l;
+    double litros;
     String combustible;
 
-    public PagosRepostaje(int id, int idClient, double importe, LocalDate fecha, double l, String combustible) {
+    public void Repostaje(int id, int idCliente, double importe, LocalDate fecha, double litros, String combustible) {
         this.id = id;
-        this.idClient = idClient;
+        this.idCliente = idCliente;
         this.importe = importe;
         this.fecha = fecha;
-        this.l = l;
+        this.litros = litros;
         this.combustible = combustible;
     }
 
@@ -25,12 +25,12 @@ public class Repostaje {
         this.id = id;
     }
 
-    public int getIdClient() {
-        return idClient;
+    public int getIdCliente() {
+        return idCliente;
     }
 
-    public void setIdClient(int idClient) {
-        this.idClient = idClient;
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 
     public LocalDate getFecha() {
@@ -49,12 +49,12 @@ public class Repostaje {
         this.importe = importe;
     }
 
-    public double getL() {
-        return l;
+    public double getLitros() {
+        return litros;
     }
 
-    public void setL(double l) {
-        this.l = l;
+    public void setLitros(double litros) {
+        this.litros = litros;
     }
 
     public String getCombustible() {
