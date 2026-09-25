@@ -3,6 +3,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDate;
 import java.util.*;
 
 public class Gasolinera {
@@ -99,14 +100,47 @@ public class Gasolinera {
     }
 
 
-    public void procesarPago(String combustible) {
+    public void procesarPago(Scanner sc) {
+        if(clientes.isEmpty()){
+            System.out.println("No hay clientes registrados todavia.Registrese antes de repostar");
+            return;
+        }
+        listarClientes();
+        System.out.println("ID del cliente: ");
+        int idCli = 0;
+        try {
+            idCli = Integer.parseInt(sc.nextLine().trim());
+        }catch (NumberFormatException e){
+            System.out.println("El ID debe ser un numero entero y positivo."+e.getMessage());
+        }
 
-        // 1) Pedir info para el pago (importe, combustible, ¿precio?)
-        // 1.1) ¿Dóndew está la info del precio?
-        // 2) Busco el objeto cliente por ID.
-        // 3) Añadir a lista repostaje el repostaje con la info que tengo.
-        // 3.1) Ojo con el ID. Asignarle el correspondiente.
-        // 4) Guardo el archivo.
+        Cliente clienteActual = null;
+        for (Cliente c : clientes){
+            if(c.getId()==idCli){
+                clienteActual = c;
+            }
+        }
+        if (clienteActual == null){
+            System.out.println("Todavia no hay registro de ese cliente.Registrese antes de realizar un repostaje");
+            return;
+        }
+
+        LocalDate fechaActual = LocalDate.now();
+        System.out.println("Escriba si quiere Diesel o Gasolina 95");
+        String combustible = Main.comprobarVacio(sc.nextLine().trim());
+
+
+        double importe = 0;
+        while(importe <= 0){
+            System.out.println("Importe: ");
+            try {
+                importe = Double.parseDouble(sc.nextLine().trim());
+            }catch(NumberFormatException e){
+                System.out.println("Escriba un importe mayor a 0");
+            }
+        }
+
+
 
     }
 
