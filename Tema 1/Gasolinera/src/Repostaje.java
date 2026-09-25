@@ -8,7 +8,9 @@ public class Repostaje {
     double litros;
     String combustible;
 
-    public void Repostaje(int id, int idCliente, double importe, LocalDate fecha, double litros, String combustible) {
+
+
+    public Repostaje(int id, int idCliente, double importe, LocalDate fecha, double litros, String combustible) {
         this.id = id;
         this.idCliente = idCliente;
         this.importe = importe;
@@ -62,6 +64,12 @@ public class Repostaje {
     }
 
     public void setCombustible(String combustible) {
+
         this.combustible = combustible;
+    }
+
+    @Override
+    public String toString() {
+        return id + ";" + idCliente + ";" + fecha + ";" + importe + ";" + litros + ";" + combustible;
     }
 }
