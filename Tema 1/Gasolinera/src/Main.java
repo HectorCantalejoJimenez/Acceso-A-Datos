@@ -39,8 +39,8 @@ public class Main {
                     gasolinera.buscarClientes(busqueda.toLowerCase());
                 }
                 case 4 -> {
-
-
+                    System.out.println("PROCESAR REPOSTAJE");
+                    gasolinera.procesarPago(sc);
                 }
                 case 5 ->{
                     System.out.println("LISTA DE PAGOS");

@@ -126,21 +126,30 @@ public class Gasolinera {
         }
 
         LocalDate fechaActual = LocalDate.now();
-        System.out.println("Escriba si quiere Diesel o Gasolina 95");
-        String combustible = Main.comprobarVacio(sc.nextLine().trim());
+        System.out.println("Elija si quiere Diesel o Gasolina 95");
+        String combustible = tipoCombustible();
 
 
         double importe = 0;
         while(importe <= 0){
             System.out.println("Importe: ");
             try {
-                importe = Double.parseDouble(sc.nextLine().trim());
+                importe = Double.parseDouble(Main.comprobarVacio(sc.nextLine()));
             }catch(NumberFormatException e){
                 System.out.println("Escriba un importe mayor a 0");
             }
         }
 
-
+        double litros = 0;
+        while (litros <= 0){
+            System.out.println("Litros: ");
+            try{
+                litros =Double.parseDouble(Main.comprobarVacio(sc.nextLine()));
+            }catch(NumberFormatException e){
+                litros = 0;
+                System.out.println("Introduce una cantidad positiva mayor a cero."+e.getMessage());
+            }
+        }
 
     }
 
