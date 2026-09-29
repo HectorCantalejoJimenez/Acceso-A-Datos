@@ -18,8 +18,7 @@ public class Gasolinera {
             this.repostajes = archivos.cargarRepostajes();
             this.clientes = archivos.cargarClientes();
         } catch (Exception e) {
-            System.out.println("ERROR!!!No se han podido cargar los ficheros");
-            System.exit(1);
+            System.out.println("ERROR!!!No se han podido cargar los ficheros"+e.getMessage());
         }
     }
 
@@ -70,6 +69,7 @@ public class Gasolinera {
             System.out.println("La lista Clientes esta vacia");
             return;
         } else {
+            System.out.println("LISTADO DE CLIENTES");
             System.out.println("ID " + "NOMBRE " + "TELEFONO " + "MATRICULA ");
             for (Cliente c : clientes) {
                 System.out.println(c.getId() + ";" + c.getNombre() + ";" + c.getTelefono() + ";" + c.getMatricula());
@@ -105,8 +105,9 @@ public class Gasolinera {
             System.out.println("No hay clientes registrados todavia.Registrese antes de repostar");
             return;
         }
+        System.out.println("=== LISTADO DE CLIENTES ===");
         listarClientes();
-        System.out.println("ID del cliente: ");
+        System.out.println("Seleccione el ID del cliente: ");
         int idCli = 0;
         try {
             idCli = Integer.parseInt(sc.nextLine().trim());
@@ -124,17 +125,14 @@ public class Gasolinera {
             System.out.println("Todavia no hay registro de ese cliente.Registrese antes de realizar un repostaje");
             return;
         }
+        int id=crearIdRep();
 
         LocalDate fechaActual = LocalDate.now();
-        System.out.println("Elija si quiere Diesel o Gasolina 95");
-        String combustible = tipoCombustible();
-
 
         double importe = 0;
         while(importe <= 0){
-            System.out.println("Importe: ");
             try {
-                importe = Double.parseDouble(Main.comprobarVacio(sc.nextLine()));
+                importe = Double.parseDouble(Utilidades.comprobarVacio("Introduzca el importe: "));
             }catch(NumberFormatException e){
                 System.out.println("Escriba un importe mayor a 0");
             }
@@ -142,36 +140,45 @@ public class Gasolinera {
 
         double litros = 0;
         while (litros <= 0){
-            System.out.println("Litros: ");
             try{
-                litros =Double.parseDouble(Main.comprobarVacio(sc.nextLine()));
+                litros =Double.parseDouble(Utilidades.comprobarVacio("Introduzca los litros: "));
             }catch(NumberFormatException e){
                 litros = 0;
                 System.out.println("Introduce una cantidad positiva mayor a cero."+e.getMessage());
             }
         }
 
+        System.out.println("Elija si quiere Diesel o Gasolina 95");
+        String combustible = tipoCombustible();
+
+        Repostaje newRepostaje = new Repostaje(id,idCli,fechaActual,importe,litros,combustible);
+        archivos.guardarRepostaje(newRepostaje);
+        repostajes.add(newRepostaje);
+        System.out.println("Se ha añadido el repostaje.Su id es: " + id);
+
+
     }
 
     public void consultarPagos() {
         if (repostajes.isEmpty()) {
             System.out.println("No hay pagos registrados.");
-        }
+        }else{
 
+            List<Repostaje> listaPagos = new ArrayList<>(repostajes);
 
-        List<Repostaje> listaPagos = new ArrayList<>(repostajes);
+            System.out.println("LISTA DE PAGOS");
 
+            System.out.println("ID " + "CLIENTE " + "FECHA " + "IMPORTE " + "LITROS " + "COMBUSTIBLE");
 
-        System.out.println("ID "+ "CLIENTE "+"FECHA "+ "IMPORTE "+"LITROS "+"COMBUSTIBLE");
-
-        for (Repostaje p : listaPagos ) {
-            String nombreCli = "Desconocido";
-            for (Cliente c : clientes) {
-                if (c.getId() == p.getIdCliente()) {
-                    nombreCli = c.getNombre();
+            for (Repostaje p : listaPagos) {
+                String nombreCli = "Desconocido";
+                for (Cliente c : clientes) {
+                    if (c.getId() == p.getIdCliente()) {
+                        nombreCli = c.getNombre();
+                    }
                 }
+                System.out.println(p.getId() + ";" + nombreCli + ";" + p.getFecha() + ";" + p.getImporte() + ";" + p.getLitros() + ";" + p.getCombustible());
             }
-            System.out.println(p.getId()+";"+nombreCli+";"+p.getFecha()+";"+p.getImporte()+";"+p.getLitros()+";"+p.getCombustible());
         }
     }
     public static String tipoCombustible(){
@@ -188,9 +195,10 @@ public class Gasolinera {
                 combustible = "Gasolina 95";
                 eleccion = true;
             }else{
-                System.out.println("Escribe 1 si quiere repostar Diesel y 2 si quiere repostar Gasolina");
+                System.out.println("ERROR!!!Solo se puede elejir entre 1 y 2");
             }
         }while(!eleccion);
         return combustible;
     }
+
 }

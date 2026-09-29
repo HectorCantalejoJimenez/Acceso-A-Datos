@@ -10,7 +10,7 @@ public class Repostaje {
 
 
 
-    public Repostaje(int id, int idCliente, double importe, LocalDate fecha, double litros, String combustible) {
+    public Repostaje(int id, int idCliente,LocalDate fecha,double importe, double litros, String combustible) {
         this.id = id;
         this.idCliente = idCliente;
         this.importe = importe;

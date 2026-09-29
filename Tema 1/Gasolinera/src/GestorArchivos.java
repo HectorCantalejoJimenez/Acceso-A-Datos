@@ -75,7 +75,7 @@ public class GestorArchivos {
                 double litros = Double.parseDouble(campos[4]);
                 String combustible = campos[5];
 
-                lista.add(new Repostaje(id, idCliente, importe, fecha, litros, combustible));
+                lista.add(new Repostaje(id, idCliente,fecha,importe, litros, combustible));
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
