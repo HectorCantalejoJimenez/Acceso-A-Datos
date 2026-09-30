@@ -4,9 +4,12 @@ import java.nio.file.*;
 import java.time.LocalDate;
 import java.util.*;
 
-public class GestorArchivos {
+public class GestorArchivos implements AlmacenamientoDatos{
     private final Path archivoClientes = Path.of("datos", "clientes.csv");
     private final Path archivoRepostajes = Path.of("datos", "repostajes.csv");
+    private AlmacenamientoDatos almacenamiento;
+
+
 
     public GestorArchivos() {
         try {
@@ -19,20 +22,12 @@ public class GestorArchivos {
                 Files.createFile(archivoRepostajes);
             }
         } catch (IOException e) {
-            System.out.println("Error al inicializar los archivos: " + e.getMessage());
+            System.out.println("Error al inicializar los archivos." + e.getMessage());
         }
     }
 
 
-    public void guardarCliente(Cliente cliente) {
-        try {
-            String linea = cliente.toString() + System.lineSeparator();
-            Files.writeString(archivoClientes, linea, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
+    @Override
     public List<Cliente> cargarClientes() {
         List<Cliente> lista = new ArrayList<>();
         try {
@@ -49,7 +44,18 @@ public class GestorArchivos {
         return lista;
     }
 
+    @Override
+    public void guardarCliente(Cliente cliente) {
+        try {
+            String linea = cliente.toString() + System.lineSeparator();
+            Files.writeString(archivoClientes, linea, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
+
+    @Override
     public void guardarRepostaje(Repostaje repostaje) {
         try {
             String linea = repostaje.toString() + System.lineSeparator();
@@ -59,6 +65,7 @@ public class GestorArchivos {
         }
     }
 
+    @Override
     public List<Repostaje> cargarRepostajes() {
         List<Repostaje> lista = new ArrayList<>();
         try {

@@ -4,6 +4,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 public class Gasolinera {
@@ -64,14 +66,15 @@ public class Gasolinera {
     }
 
     public void listarClientes() {
-        List<Cliente> listaClientes = new ArrayList();
+        List<Cliente> listaClientes = new ArrayList<>(clientes);
         if (clientes.isEmpty()) {
             System.out.println("La lista Clientes esta vacia");
             return;
         } else {
+            listaClientes.sort(null);
             System.out.println("LISTADO DE CLIENTES");
             System.out.println("ID " + "NOMBRE " + "TELEFONO " + "MATRICULA ");
-            for (Cliente c : clientes) {
+            for (Cliente c : listaClientes) {
                 System.out.println(c.getId() + ";" + c.getNombre() + ";" + c.getTelefono() + ";" + c.getMatricula());
             }
         }
@@ -92,6 +95,7 @@ public class Gasolinera {
         if (encontrados.isEmpty()) {
             System.out.println("No se han encontrado clientes.");
         }else {
+            encontrados.sort(null);
             System.out.println("ID " + "NOMBRE " + "TELÉFONO " + "MATRÍCULA ");
             for (Cliente c : encontrados) {
                 System.out.println(c.getId() + ";" + c.getNombre() + ";" + c.getTelefono() + ";" + c.getMatricula());
@@ -127,12 +131,28 @@ public class Gasolinera {
         }
         int id=crearIdRep();
 
-        LocalDate fechaActual = LocalDate.now();
+        LocalDate fechaRepostaje = null;
+        DateTimeFormatter estructuraFecha = DateTimeFormatter.ofPattern("d/M/yyyy");
+
+        while(fechaRepostaje == null){
+            System.out.println("Fecha (dd/MM/aaaa);vacio para hoy: ");
+            String entradaFecha=sc.nextLine().trim();
+            if(entradaFecha.isEmpty()){
+                fechaRepostaje = LocalDate.now();
+            }else{
+                try {
+                    fechaRepostaje = LocalDate.parse(entradaFecha,estructuraFecha);
+                }catch(DateTimeParseException e){
+                    System.out.println("Use el formato dd/MM/aaaa para que la fecha sea correcta."+e.getMessage());
+                }
+            }
+        }
 
         double importe = 0;
         while(importe <= 0){
             try {
-                importe = Double.parseDouble(Utilidades.comprobarVacio("Introduzca el importe: "));
+                String scannerImporte =Utilidades.comprobarVacio("Introduzca el importe: ");
+                importe=Double.parseDouble(scannerImporte.replace(",","."));
             }catch(NumberFormatException e){
                 System.out.println("Escriba un importe mayor a 0");
             }
@@ -141,7 +161,8 @@ public class Gasolinera {
         double litros = 0;
         while (litros <= 0){
             try{
-                litros =Double.parseDouble(Utilidades.comprobarVacio("Introduzca los litros: "));
+                String scannerLitros =Utilidades.comprobarVacio("Introduzca los litros: ");
+                litros =Double.parseDouble(scannerLitros.replace(",","."));
             }catch(NumberFormatException e){
                 litros = 0;
                 System.out.println("Introduce una cantidad positiva mayor a cero."+e.getMessage());
@@ -151,7 +172,7 @@ public class Gasolinera {
         System.out.println("Elija si quiere Diesel o Gasolina 95");
         String combustible = tipoCombustible();
 
-        Repostaje newRepostaje = new Repostaje(id,idCli,fechaActual,importe,litros,combustible);
+        Repostaje newRepostaje = new Repostaje(id,idCli,fechaRepostaje,importe,litros,combustible);
         archivos.guardarRepostaje(newRepostaje);
         repostajes.add(newRepostaje);
         System.out.println("Se ha añadido el repostaje.Su id es: " + id);
@@ -165,11 +186,13 @@ public class Gasolinera {
         }else{
 
             List<Repostaje> listaPagos = new ArrayList<>(repostajes);
+            listaPagos.sort(null);
 
             System.out.println("LISTA DE PAGOS");
 
             System.out.println("ID " + "CLIENTE " + "FECHA " + "IMPORTE " + "LITROS " + "COMBUSTIBLE");
 
+            DateTimeFormatter formateador=DateTimeFormatter.ofPattern("dd/MM/yyyy");
             for (Repostaje p : listaPagos) {
                 String nombreCli = "Desconocido";
                 for (Cliente c : clientes) {
@@ -177,7 +200,8 @@ public class Gasolinera {
                         nombreCli = c.getNombre();
                     }
                 }
-                System.out.println(p.getId() + ";" + nombreCli + ";" + p.getFecha() + ";" + p.getImporte() + ";" + p.getLitros() + ";" + p.getCombustible());
+                String fechaFormateada=p.getFecha().format(formateador);
+                System.out.println(p.getId() + ";" + nombreCli + ";" + fechaFormateada + ";" + p.getImporte() + ";" + p.getLitros() + ";" + p.getCombustible());
             }
         }
     }

@@ -1,4 +1,4 @@
-public class Cliente {
+public class Cliente implements Comparable<Cliente> {
 
     private final int id;
     private String nombre;
@@ -41,9 +41,17 @@ public class Cliente {
         this.matricula = matricula;
     }
 
-
     @Override
     public String toString() {
         return id + ";" + nombre + ";" + telefono + ";" + matricula;
+    }
+
+    @Override
+    public int compareTo(Cliente c) {
+        int compararNombre=this.nombre.compareTo(c.getNombre());
+        if(compararNombre!= 0){
+            return compararNombre;
+        }
+        return Integer.compare(this.id,c.getId());
     }
 }

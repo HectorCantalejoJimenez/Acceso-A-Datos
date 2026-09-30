@@ -1,6 +1,6 @@
 import java.time.LocalDate;
 
-public class Repostaje {
+public class Repostaje implements Comparable<Repostaje>{
     int id;
     int idCliente;
     LocalDate fecha;
@@ -71,5 +71,14 @@ public class Repostaje {
     @Override
     public String toString() {
         return id + ";" + idCliente + ";" + fecha + ";" + importe + ";" + litros + ";" + combustible;
+    }
+
+    @Override
+    public int compareTo(Repostaje r) {
+        int compararFecha=r.fecha.compareTo(this.fecha);
+        if(compararFecha!= 0){
+            return compararFecha;
+        }
+        return Integer.compare(r.getId(),this.id);
     }
 }

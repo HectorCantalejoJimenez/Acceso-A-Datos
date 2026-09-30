@@ -39,7 +39,7 @@ public class Main {
                     String matricula=Utilidades.comprobarVacio("Matricula: ");
                     while(matricula.length() >= 8){
                         System.out.println("ERROR!!!Escriba una matricula no mayor a 7 Digitos");
-                        matricula =Utilidades.comprobarVacio("Matricula: ");
+                        matricula =Utilidades.comprobarVacio("Matricula: ").toUpperCase();
                     }
                     gasolinera.agregarCliente(nombre,telefono,matricula);
                 }
