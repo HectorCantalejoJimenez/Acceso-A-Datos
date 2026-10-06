@@ -1,24 +1,22 @@
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
+
 public class Gasolinera {
 
     private List<Cliente> clientes;
     private List<Repostaje> repostajes;
-    private GestorArchivos archivos;
+    private GestorArchivosJson archivosJson;
 
-    public Gasolinera(List<Cliente> clientes, List<Repostaje> repostajes, GestorArchivos archivos) {
-        this.archivos = archivos;
+    public Gasolinera(List<Cliente> clientes, List<Repostaje> repostajes, GestorArchivosJson archivosJson) {
+        this.archivosJson = archivosJson;
+        this.clientes=clientes;
+        this.repostajes=repostajes;
         try {
-            this.repostajes = archivos.cargarRepostajes();
-            this.clientes = archivos.cargarClientes();
+            this.clientes.addAll(archivosJson.cargarClientes());
+            this.repostajes.addAll(archivosJson.cargarRepostajes());
         } catch (Exception e) {
             System.out.println("ERROR!!!No se han podido cargar los ficheros"+e.getMessage());
         }
@@ -60,7 +58,7 @@ public class Gasolinera {
 
         int id = crearIdCli();
         Cliente newCliente = new Cliente(id, nombre, telefono, matricula);
-        archivos.guardarCliente(newCliente);
+        archivosJson.guardarCliente(newCliente);
         clientes.add(newCliente);
         System.out.println("Se ha añadido el cliente.Su id es: " + id);
     }
@@ -75,7 +73,7 @@ public class Gasolinera {
             System.out.println("LISTADO DE CLIENTES");
             System.out.println("ID " + "NOMBRE " + "TELEFONO " + "MATRICULA ");
             for (Cliente c : listaClientes) {
-                System.out.println(c.getId() + ";" + c.getNombre() + ";" + c.getTelefono() + ";" + c.getMatricula());
+                System.out.println(c.getId() + ",Nombre: " + c.getNombre() + ",Telefono: " + c.getTelefono() + ",Matricula: " + c.getMatricula());
             }
         }
     }
@@ -98,7 +96,7 @@ public class Gasolinera {
             encontrados.sort(null);
             System.out.println("ID " + "NOMBRE " + "TELÉFONO " + "MATRÍCULA ");
             for (Cliente c : encontrados) {
-                System.out.println(c.getId() + ";" + c.getNombre() + ";" + c.getTelefono() + ";" + c.getMatricula());
+                System.out.println(c.getId() + ",Nombre: " + c.getNombre() + ",Telefono: " + c.getTelefono() + ",Matricula: " + c.getMatricula());
             }
         }
     }
@@ -173,7 +171,7 @@ public class Gasolinera {
         String combustible = tipoCombustible();
 
         Repostaje newRepostaje = new Repostaje(id,idCli,fechaRepostaje,importe,litros,combustible);
-        archivos.guardarRepostaje(newRepostaje);
+        archivosJson.guardarRepostaje(newRepostaje);
         repostajes.add(newRepostaje);
         System.out.println("Se ha añadido el repostaje.Su id es: " + id);
 

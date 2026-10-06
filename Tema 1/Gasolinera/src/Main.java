@@ -1,18 +1,13 @@
 import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Scanner;
-
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int opcion = 0;
+        int opcion;
         GestorArchivos gestor = new GestorArchivos();
-        Gasolinera gasolinera = new Gasolinera(new ArrayList<>(),new ArrayList<>(),gestor);
+        Gasolinera gasolinera = new Gasolinera(new ArrayList<>(),new ArrayList<>(),new GestorArchivosJson());
 
         do {
             mostrarMenu();
@@ -43,9 +38,9 @@ public class Main {
                     }
                     gasolinera.agregarCliente(nombre,telefono,matricula);
                 }
-                case 2 ->{
+                case 2 ->
                     gasolinera.listarClientes();
-                }
+
                 case 3 ->{
                     String busqueda = Utilidades.comprobarVacio("Inserte el cliente que quiera buscar(Nombre,tlf,matricula):");
                     gasolinera.buscarClientes(busqueda.toLowerCase());
@@ -54,9 +49,9 @@ public class Main {
                     System.out.println("PROCESAR REPOSTAJE");
                     gasolinera.procesarPago(sc);
                 }
-                case 5 ->{
+                case 5 ->
                     gasolinera.consultarPagos();
-                }
+
 
             }
         } while (opcion != 0);
@@ -64,14 +59,14 @@ public class Main {
 
     public static void mostrarMenu() {
         System.out.println();
-        System.out.println("=== GESTIÓN DE GASOLINERA ===");
+        System.out.println("=== GESTION DE GASOLINERA ===");
         System.out.println("1. Dar de alta un cliente");
         System.out.println("2. Listar clientes");
         System.out.println("3. Buscar clientes");
         System.out.println("4. Procesar un pago de repostaje");
         System.out.println("5. Consultar pagos");
         System.out.println("0. Salir");
-        System.out.print("Opción: ");
+        System.out.print("Opcion: ");
     }
 
 }

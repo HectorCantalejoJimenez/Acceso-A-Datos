@@ -70,8 +70,9 @@ public class Repostaje implements Comparable<Repostaje>{
 
     @Override
     public String toString() {
-        return id + ";" + idCliente + ";" + fecha + ";" + importe + ";" + litros + ";" + combustible;
+        return "{\"id\":\"" + id + "\",\"idCliente\":\"" + idCliente + "\",\"fecha\":\"" + fecha + "\",\"importe\":\"" + importe + "\",\"litros\":\"" + litros + "\",\"combustible\":\"" + combustible + "\"}";
     }
+
 
     @Override
     public int compareTo(Repostaje r) {
