@@ -41,11 +41,6 @@ public class Cliente implements Comparable<Cliente> {
         this.matricula = matricula;
     }
 
-    @Override
-    public String toString() {
-        return "{\"id\":\"" + id + "\",\"nombre\":\"" + nombre + "\",\"telefono\":\"" + telefono + "\",\"matricula\":\"" + matricula + "\"}";
-    }
-
 
     @Override
     public int compareTo(Cliente c) {

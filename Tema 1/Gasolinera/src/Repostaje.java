@@ -68,11 +68,6 @@ public class Repostaje implements Comparable<Repostaje>{
         this.combustible = combustible;
     }
 
-    @Override
-    public String toString() {
-        return "{\"id\":\"" + id + "\",\"idCliente\":\"" + idCliente + "\",\"fecha\":\"" + fecha + "\",\"importe\":\"" + importe + "\",\"litros\":\"" + litros + "\",\"combustible\":\"" + combustible + "\"}";
-    }
-
 
     @Override
     public int compareTo(Repostaje r) {

@@ -1,3 +1,4 @@
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
@@ -8,7 +9,8 @@ public class GestorArchivosJson implements AlmacenamientoDatos{
     private final Path archivoClientes = Path.of("datos", "clientes.json");
     private final Path archivoRepostajes = Path.of("datos", "repostajes.json");
     private AlmacenamientoDatos almacenamiento;
-
+    private static final String abrirJson = "[\n";
+    private static final String cerrarJson = "\n]";
 
 
     public GestorArchivosJson() {
@@ -45,22 +47,41 @@ public class GestorArchivosJson implements AlmacenamientoDatos{
 
     @Override
     public void guardarCliente(Cliente cliente) {
-        try {
-            String linea = cliente.toString() + System.lineSeparator();
-            Files.writeString(archivoClientes, linea, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+        List<Cliente> listaCliente=cargarClientes();
+
+        listaCliente.add(cliente);
+        String clienteAJson;
+        try (BufferedWriter bf = Files.newBufferedWriter(archivoClientes,StandardOpenOption.CREATE)){
+            bf.write(abrirJson);
+            clienteAJson=listaCliente.stream().map(c -> clienteEnJson(c)).reduce((s1,s2)->s1+",\n"+s2).orElse(" ");
+            bf.write(clienteAJson);
+            bf.write(cerrarJson);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
+    public String clienteEnJson(Cliente cliente){
+        return "{\"Id\":"+cliente.getId()+",\"Nombre\":\""+cliente.getNombre()+"\",\"Telefono\":\""+cliente.getTelefono()+"\",\"Matricula\": "+cliente.getMatricula()+"\"}";
+    }
+
+    public String repostajeEnJson(Repostaje r){
+        return "{\"id\":" + r.getId() + ",\"idCliente\":" + r.getIdCliente() + ",\"fecha\":\"" + r.getFecha() + "\"" + ",\"importe\":" + r.getImporte() + ",\"litros\":" + r.getLitros() + ",\"combustible\":\"" + r.getCombustible() + "\"}";
+    }
 
     @Override
     public void guardarRepostaje(Repostaje repostaje) {
-        try {
-            String linea = repostaje.toString() + System.lineSeparator();
-            Files.writeString(archivoRepostajes, linea, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+        List<Repostaje>listaRepostajes = cargarRepostajes();
+
+        listaRepostajes.add(repostaje);
+        String repostajeAJson;
+        try (BufferedWriter bf = Files.newBufferedWriter(archivoRepostajes,StandardOpenOption.CREATE)){
+            bf.write(abrirJson);
+            repostajeAJson=listaRepostajes.stream().map(r -> repostajeEnJson(r)).reduce((s1,s2)->s1+",\n"+s2).orElse(" ");
+            bf.write(repostajeAJson);
+            bf.write(cerrarJson);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 

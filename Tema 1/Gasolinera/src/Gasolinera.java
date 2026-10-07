@@ -8,15 +8,15 @@ public class Gasolinera {
 
     private List<Cliente> clientes;
     private List<Repostaje> repostajes;
-    private GestorArchivosJson archivosJson;
+    private AlmacenamientoDatos almacenamiento;
 
-    public Gasolinera(List<Cliente> clientes, List<Repostaje> repostajes, GestorArchivosJson archivosJson) {
-        this.archivosJson = archivosJson;
+    public Gasolinera(List<Cliente> clientes, List<Repostaje> repostajes, AlmacenamientoDatos almacenamiento) {
+        this.almacenamiento =almacenamiento;
         this.clientes=clientes;
         this.repostajes=repostajes;
         try {
-            this.clientes.addAll(archivosJson.cargarClientes());
-            this.repostajes.addAll(archivosJson.cargarRepostajes());
+            this.clientes.addAll(almacenamiento.cargarClientes());
+            this.repostajes.addAll(almacenamiento.cargarRepostajes());
         } catch (Exception e) {
             System.out.println("ERROR!!!No se han podido cargar los ficheros"+e.getMessage());
         }
@@ -58,7 +58,7 @@ public class Gasolinera {
 
         int id = crearIdCli();
         Cliente newCliente = new Cliente(id, nombre, telefono, matricula);
-        archivosJson.guardarCliente(newCliente);
+        almacenamiento.guardarCliente(newCliente);
         clientes.add(newCliente);
         System.out.println("Se ha añadido el cliente.Su id es: " + id);
     }
@@ -171,7 +171,7 @@ public class Gasolinera {
         String combustible = tipoCombustible();
 
         Repostaje newRepostaje = new Repostaje(id,idCli,fechaRepostaje,importe,litros,combustible);
-        archivosJson.guardarRepostaje(newRepostaje);
+        almacenamiento.guardarRepostaje(newRepostaje);
         repostajes.add(newRepostaje);
         System.out.println("Se ha añadido el repostaje.Su id es: " + id);
 
