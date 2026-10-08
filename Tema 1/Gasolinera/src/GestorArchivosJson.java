@@ -6,14 +6,24 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class GestorArchivosJson implements AlmacenamientoDatos{
-    private final Path archivoClientes = Path.of("datos", "clientes.json");
-    private final Path archivoRepostajes = Path.of("datos", "repostajes.json");
+    private final Path archivoClientes ;
+    private final Path archivoRepostajes;
     private AlmacenamientoDatos almacenamiento;
     private static final String abrirJson = "[\n";
     private static final String cerrarJson = "\n]";
 
+    public GestorArchivosJson(Path carpetaDestino) {
+        this.archivoClientes = carpetaDestino.resolve("clientes.json");
+        this.archivoRepostajes = carpetaDestino.resolve("repostajes.json");
+    }
 
-    public GestorArchivosJson() {
+    @Override
+    public boolean existenArchivos() {
+        return Files.exists(archivoClientes)&&Files.exists(archivoRepostajes);
+    }
+
+    @Override
+    public void inicializarArchivos() {
         try {
             if (!Files.exists(archivoClientes)) {
                 Files.createDirectories(archivoClientes.getParent());
@@ -28,11 +38,13 @@ public class GestorArchivosJson implements AlmacenamientoDatos{
         }
     }
 
-
     @Override
     public List<Cliente> cargarClientes() {
         List<Cliente> lista = new ArrayList<>();
         try {
+            if(!Files.exists(archivoClientes)){
+                return lista;
+            }
             List<String> lineas = Files.readAllLines(archivoClientes, StandardCharsets.UTF_8);
             for (String linea : lineas) {
                 if (linea.isBlank()) continue;
@@ -53,7 +65,7 @@ public class GestorArchivosJson implements AlmacenamientoDatos{
         String clienteAJson;
         try (BufferedWriter bf = Files.newBufferedWriter(archivoClientes,StandardOpenOption.CREATE)){
             bf.write(abrirJson);
-            clienteAJson=listaCliente.stream().map(c -> clienteEnJson(c)).reduce((s1,s2)->s1+",\n"+s2).orElse(" ");
+            clienteAJson=listaCliente.stream().map( this:: clienteEnJson).reduce((s1,s2)->s1+",\n"+s2).orElse(" ");
             bf.write(clienteAJson);
             bf.write(cerrarJson);
         } catch (IOException e) {
@@ -62,8 +74,9 @@ public class GestorArchivosJson implements AlmacenamientoDatos{
     }
 
     public String clienteEnJson(Cliente cliente){
-        return "{\"Id\":"+cliente.getId()+",\"Nombre\":\""+cliente.getNombre()+"\",\"Telefono\":\""+cliente.getTelefono()+"\",\"Matricula\": "+cliente.getMatricula()+"\"}";
+        return "{\"Id\":"+cliente.getId()+",\"Nombre\":\""+cliente.getNombre()+"\",\"Telefono\":\""+cliente.getTelefono()+"\",\"Matricula\":\""+cliente.getMatricula()+"\"}";
     }
+
 
     public String repostajeEnJson(Repostaje r){
         return "{\"id\":" + r.getId() + ",\"idCliente\":" + r.getIdCliente() + ",\"fecha\":\"" + r.getFecha() + "\"" + ",\"importe\":" + r.getImporte() + ",\"litros\":" + r.getLitros() + ",\"combustible\":\"" + r.getCombustible() + "\"}";
@@ -77,7 +90,7 @@ public class GestorArchivosJson implements AlmacenamientoDatos{
         String repostajeAJson;
         try (BufferedWriter bf = Files.newBufferedWriter(archivoRepostajes,StandardOpenOption.CREATE)){
             bf.write(abrirJson);
-            repostajeAJson=listaRepostajes.stream().map(r -> repostajeEnJson(r)).reduce((s1,s2)->s1+",\n"+s2).orElse(" ");
+            repostajeAJson=listaRepostajes.stream().map(this::repostajeEnJson).reduce((s1, s2)->s1+",\n"+s2).orElse(" ");
             bf.write(repostajeAJson);
             bf.write(cerrarJson);
         } catch (IOException e) {

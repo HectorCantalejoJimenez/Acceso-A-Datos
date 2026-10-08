@@ -6,13 +6,17 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class GestorArchivosCsv implements AlmacenamientoDatos{
-    private final Path archivoClientes = Path.of("datos", "clientes.csv");
-    private final Path archivoRepostajes = Path.of("datos", "repostajes.csv");
+    private final Path archivoClientes ;
+    private final Path archivoRepostajes;
     private AlmacenamientoDatos almacenamiento;
 
+    public GestorArchivosCsv(Path carpetaDestino) {
+        this.archivoClientes = carpetaDestino.resolve("clientes.csv");
+        this.archivoRepostajes = carpetaDestino.resolve("repostajes.csv");
+    }
 
-
-    public GestorArchivosCsv() {
+    @Override
+    public void inicializarArchivos() {
         try {
             if (!Files.exists(archivoClientes)) {
                 Files.createDirectories(archivoClientes.getParent());
@@ -27,6 +31,10 @@ public class GestorArchivosCsv implements AlmacenamientoDatos{
         }
     }
 
+    @Override
+    public boolean existenArchivos() {
+        return Files.exists(archivoClientes)&&Files.exists(archivoRepostajes);
+    }
 
     @Override
     public List<Cliente> cargarClientes() {
@@ -56,7 +64,7 @@ public class GestorArchivosCsv implements AlmacenamientoDatos{
         listaCliente.add(cliente);
         String clienteACsv;
         try (BufferedWriter bf = Files.newBufferedWriter(archivoClientes,StandardOpenOption.CREATE)){
-            clienteACsv=listaCliente.stream().map(c -> clienteEnCsv(c)).reduce((s1,s2)->s1+",\n"+s2).orElse(" ");
+            clienteACsv=listaCliente.stream().map(this::clienteEnCsv).reduce((s1, s2)->s1+",\n"+s2).orElse(" ");
             bf.write(clienteACsv);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -75,7 +83,7 @@ public class GestorArchivosCsv implements AlmacenamientoDatos{
         listaRepostajes.add(repostaje);
         String repostajeACsv;
         try (BufferedWriter bf = Files.newBufferedWriter(archivoRepostajes,StandardOpenOption.CREATE)){
-            repostajeACsv=listaRepostajes.stream().map(r -> repostajeEnCsv(r)).reduce((s1,s2)->s1+",\n"+s2).orElse(" ");
+            repostajeACsv=listaRepostajes.stream().map(this::repostajeEnCsv).reduce((s1, s2)->s1+",\n"+s2).orElse(" ");
             bf.write(repostajeACsv);
         } catch (IOException e) {
             throw new RuntimeException(e);
