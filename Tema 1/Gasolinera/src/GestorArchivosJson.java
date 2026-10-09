@@ -49,7 +49,7 @@ public class GestorArchivosJson implements AlmacenamientoDatos{
             for (String linea : lineas) {
                 if (linea.isBlank()) continue;
                 String[] campos = linea.split("\"");
-                lista.add(new Cliente(Integer.parseInt(campos[3]), campos[7], campos[11], campos[15]));
+                lista.add(new Cliente(Integer.parseInt(campos[2]), campos[4], campos[6], campos[8]));
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -74,12 +74,12 @@ public class GestorArchivosJson implements AlmacenamientoDatos{
     }
 
     public String clienteEnJson(Cliente cliente){
-        return "{\"Id\":"+cliente.getId()+",\"Nombre\":\""+cliente.getNombre()+"\",\"Telefono\":\""+cliente.getTelefono()+"\",\"Matricula\":\""+cliente.getMatricula()+"\"}";
+        return "{\"Id:\""+cliente.getId()+"\",Nombre:\""+cliente.getNombre()+"\",Telefono:\""+cliente.getTelefono()+"\",Matricula:\""+cliente.getMatricula()+"\"}";
     }
 
 
     public String repostajeEnJson(Repostaje r){
-        return "{\"id\":" + r.getId() + ",\"idCliente\":" + r.getIdCliente() + ",\"fecha\":\"" + r.getFecha() + "\"" + ",\"importe\":" + r.getImporte() + ",\"litros\":" + r.getLitros() + ",\"combustible\":\"" + r.getCombustible() + "\"}";
+        return "{\"id:\"" + r.getId() + "\",idCliente:\"" + r.getIdCliente() + "\",fecha:\"" + r.getFecha() + "\",importe:\"" + r.getImporte() + "\",litros:\"" + r.getLitros() + "\",combustible:\"" + r.getCombustible() + "\"}";
     }
 
     @Override
@@ -108,12 +108,12 @@ public class GestorArchivosJson implements AlmacenamientoDatos{
                 String[] campos = linea.split("\"");
                 if (campos.length != 6) throw new IllegalArgumentException("Fichero de repostajes corrupto.");
 
-                int id = Integer.parseInt(campos[3]);
-                int idCliente = Integer.parseInt(campos[7]);
-                LocalDate fecha = LocalDate.parse(campos[11]);
-                double importe = Double.parseDouble(campos[15]);
-                double litros = Double.parseDouble(campos[19]);
-                String combustible = campos[23];
+                int id = Integer.parseInt(campos[2]);
+                int idCliente = Integer.parseInt(campos[4]);
+                LocalDate fecha = LocalDate.parse(campos[6]);
+                double importe = Double.parseDouble(campos[8]);
+                double litros = Double.parseDouble(campos[10]);
+                String combustible = campos[12];
 
                 lista.add(new Repostaje(id, idCliente,fecha,importe, litros, combustible));
             }
