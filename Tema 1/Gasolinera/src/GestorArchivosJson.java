@@ -42,17 +42,20 @@ public class GestorArchivosJson implements AlmacenamientoDatos{
     public List<Cliente> cargarClientes() {
         List<Cliente> lista = new ArrayList<>();
         try {
-            if(!Files.exists(archivoClientes)){
+            if (!Files.exists(archivoClientes)) {
                 return lista;
             }
             List<String> lineas = Files.readAllLines(archivoClientes, StandardCharsets.UTF_8);
             for (String linea : lineas) {
-                if (linea.isBlank()) continue;
+                String lineaTrim = linea.trim();
+                if (lineaTrim.isBlank() || lineaTrim.equals("[") || lineaTrim.equals("]"));
+
                 String[] campos = linea.split("\"");
+                if (campos.length < 9) continue;
                 lista.add(new Cliente(Integer.parseInt(campos[2]), campos[4], campos[6], campos[8]));
             }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error al cargar clientes JSON: " + e.getMessage());
         }
         return lista;
     }
@@ -102,11 +105,16 @@ public class GestorArchivosJson implements AlmacenamientoDatos{
     public List<Repostaje> cargarRepostajes() {
         List<Repostaje> lista = new ArrayList<>();
         try {
+            if (!Files.exists(archivoRepostajes)) {
+                return lista;
+            }
             List<String> lineas = Files.readAllLines(archivoRepostajes, StandardCharsets.UTF_8);
             for (String linea : lineas) {
-                if (linea.isBlank()) continue;
+                String lineaTrim = linea.trim();
+                if (lineaTrim.isBlank() || lineaTrim.equals("[") || lineaTrim.equals("]"));
+
                 String[] campos = linea.split("\"");
-                if (campos.length != 6) throw new IllegalArgumentException("Fichero de repostajes corrupto.");
+                if (campos.length < 13) continue;
 
                 int id = Integer.parseInt(campos[2]);
                 int idCliente = Integer.parseInt(campos[4]);
@@ -115,10 +123,10 @@ public class GestorArchivosJson implements AlmacenamientoDatos{
                 double litros = Double.parseDouble(campos[10]);
                 String combustible = campos[12];
 
-                lista.add(new Repostaje(id, idCliente,fecha,importe, litros, combustible));
+                lista.add(new Repostaje(id, idCliente, fecha, importe, litros, combustible));
             }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error al cargar repostajes JSON: " + e.getMessage());
         }
         return lista;
     }
