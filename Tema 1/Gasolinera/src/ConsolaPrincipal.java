@@ -1,9 +1,9 @@
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsolaPrincipal {
-
     private AlmacenamientoDatos almacenamiento;
     public ConsolaPrincipal(AlmacenamientoDatos almacenamiento){
         this.almacenamiento = almacenamiento;
@@ -58,6 +58,8 @@ public class ConsolaPrincipal {
 
             }
         }while(opcion != 0);
+        System.out.println("Se han guardado todos los clientes y repostajes añadidos");
+        gasolinera.guardarTodo();
     }
     public static void mostrarMenu() {
     System.out.println();

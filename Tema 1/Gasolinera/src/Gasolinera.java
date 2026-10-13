@@ -58,7 +58,6 @@ public class Gasolinera {
 
         int id = crearIdCli();
         Cliente newCliente = new Cliente(id, nombre, telefono, matricula);
-        almacenamiento.guardarCliente(newCliente);
         clientes.add(newCliente);
         System.out.println("Se ha añadido el cliente.Su id es: " + id);
     }
@@ -171,7 +170,6 @@ public class Gasolinera {
         String combustible = tipoCombustible();
 
         Repostaje newRepostaje = new Repostaje(id,idCli,fechaRepostaje,importe,litros,combustible);
-        almacenamiento.guardarRepostaje(newRepostaje);
         repostajes.add(newRepostaje);
         System.out.println("Se ha añadido el repostaje.Su id es: " + id);
 
@@ -222,5 +220,7 @@ public class Gasolinera {
         }while(!eleccion);
         return combustible;
     }
-
+    public void guardarTodo(){
+        almacenamiento.guardarTodo(clientes,repostajes);
+    }
 }

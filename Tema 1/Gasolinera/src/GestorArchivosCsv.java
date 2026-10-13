@@ -37,6 +37,24 @@ public class GestorArchivosCsv implements AlmacenamientoDatos{
     }
 
     @Override
+    public void guardarTodo(List<Cliente> c,List <Repostaje> r) {
+        String clienteACsv;
+        String repostajeACsv;
+        try (BufferedWriter bf = Files.newBufferedWriter(archivoClientes,StandardOpenOption.CREATE)){
+            clienteACsv=c.stream().map(this::clienteEnCsv).reduce((s1, s2)->s1+",\n"+s2).orElse(" ");
+            bf.write(clienteACsv);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try (BufferedWriter bf = Files.newBufferedWriter(archivoRepostajes,StandardOpenOption.CREATE)){
+            repostajeACsv=r.stream().map(this::repostajeEnCsv).reduce((s1, s2)->s1+",\n"+s2).orElse(" ");
+            bf.write(repostajeACsv);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public List<Cliente> cargarClientes() {
         List<Cliente> lista = new ArrayList<>();
         try {

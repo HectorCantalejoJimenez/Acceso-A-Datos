@@ -23,6 +23,29 @@ public class GestorArchivosJson implements AlmacenamientoDatos{
     }
 
     @Override
+    public void guardarTodo(List<Cliente> c,List <Repostaje> r) {
+
+        String clienteAJson;
+        String repostajeAJson;
+        try(BufferedWriter bf=Files.newBufferedWriter(archivoClientes,StandardCharsets.UTF_8)) {
+            bf.write(abrirJson);
+            clienteAJson=c.stream().map( this:: clienteEnJson).reduce((s1,s2)->s1+",\n"+s2).orElse(" ");
+            bf.write(clienteAJson);
+            bf.write(cerrarJson);
+        } catch (IOException e) {
+            System.out.println("Ha ocurrido un error al intentar guardar los datos de los clientes."+e.getMessage());
+        }
+        try(BufferedWriter bf=Files.newBufferedWriter(archivoRepostajes,StandardCharsets.UTF_8)){
+            bf.write(abrirJson);
+            repostajeAJson=r.stream().map(this::repostajeEnJson).reduce((s1, s2)->s1+",\n"+s2).orElse(" ");
+            bf.write(repostajeAJson);
+            bf.write(cerrarJson);
+        }catch (IOException e){
+            System.out.println("Ha ocurrido un error al intentar guardar los datos de los repostajes."+e.getMessage());
+        }
+    }
+
+    @Override
     public void inicializarArchivos() {
         try {
             if (!Files.exists(archivoClientes)) {
@@ -48,11 +71,10 @@ public class GestorArchivosJson implements AlmacenamientoDatos{
             List<String> lineas = Files.readAllLines(archivoClientes, StandardCharsets.UTF_8);
             for (String linea : lineas) {
                 String lineaTrim = linea.trim();
-                if (lineaTrim.isBlank() || lineaTrim.equals("[") || lineaTrim.equals("]"));
-
+                if (lineaTrim.isBlank() || lineaTrim.equals("[") || lineaTrim.equals("]")) continue;
                 String[] campos = linea.split("\"");
                 if (campos.length < 9) continue;
-                lista.add(new Cliente(Integer.parseInt(campos[2]), campos[4], campos[6], campos[8]));
+                lista.add(new Cliente(Integer.parseInt(campos[3]), campos[7], campos[11], campos[15]));
             }
         } catch (Exception e) {
             System.out.println("Error al cargar clientes JSON: " + e.getMessage());
@@ -77,12 +99,12 @@ public class GestorArchivosJson implements AlmacenamientoDatos{
     }
 
     public String clienteEnJson(Cliente cliente){
-        return "{\"Id:\""+cliente.getId()+"\",Nombre:\""+cliente.getNombre()+"\",Telefono:\""+cliente.getTelefono()+"\",Matricula:\""+cliente.getMatricula()+"\"}";
+        return "{\"Id\":\""+cliente.getId()+"\",\"Nombre\":\""+cliente.getNombre()+"\",\"Telefono\":\""+cliente.getTelefono()+"\",\"Matricula\":\""+cliente.getMatricula()+"\"}";
     }
 
 
     public String repostajeEnJson(Repostaje r){
-        return "{\"id:\"" + r.getId() + "\",idCliente:\"" + r.getIdCliente() + "\",fecha:\"" + r.getFecha() + "\",importe:\"" + r.getImporte() + "\",litros:\"" + r.getLitros() + "\",combustible:\"" + r.getCombustible() + "\"}";
+        return "{\"id\":\"" + r.getId() + "\",\"idCliente\":\"" + r.getIdCliente() + "\",\"fecha\":\"" + r.getFecha() + "\",\"importe\":\"" + r.getImporte() + "\",\"litros\":\"" + r.getLitros() + "\",\"combustible\":\"" + r.getCombustible() + "\"}";
     }
 
     @Override
@@ -111,17 +133,17 @@ public class GestorArchivosJson implements AlmacenamientoDatos{
             List<String> lineas = Files.readAllLines(archivoRepostajes, StandardCharsets.UTF_8);
             for (String linea : lineas) {
                 String lineaTrim = linea.trim();
-                if (lineaTrim.isBlank() || lineaTrim.equals("[") || lineaTrim.equals("]"));
+                if (lineaTrim.isBlank() || lineaTrim.equals("[") || lineaTrim.equals("]")) continue;
 
                 String[] campos = linea.split("\"");
                 if (campos.length < 13) continue;
 
-                int id = Integer.parseInt(campos[2]);
-                int idCliente = Integer.parseInt(campos[4]);
-                LocalDate fecha = LocalDate.parse(campos[6]);
-                double importe = Double.parseDouble(campos[8]);
-                double litros = Double.parseDouble(campos[10]);
-                String combustible = campos[12];
+                int id = Integer.parseInt(campos[3]);
+                int idCliente = Integer.parseInt(campos[7]);
+                LocalDate fecha = LocalDate.parse(campos[11]);
+                double importe = Double.parseDouble(campos[15]);
+                double litros = Double.parseDouble(campos[19]);
+                String combustible = campos[23];
 
                 lista.add(new Repostaje(id, idCliente, fecha, importe, litros, combustible));
             }

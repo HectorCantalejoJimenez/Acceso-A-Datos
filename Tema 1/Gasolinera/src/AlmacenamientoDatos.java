@@ -7,5 +7,5 @@ public interface AlmacenamientoDatos {
     List <Repostaje>cargarRepostajes();
     void guardarRepostaje(Repostaje repostaje);
     boolean existenArchivos();
-
+    void guardarTodo(List<Cliente> c,List <Repostaje> r);
 }
